@@ -2,6 +2,8 @@ import csv
 import matplotlib.pyplot as plt
 import numpy as np
 import mplcursors
+import math
+from methods import *
 
 
 #file_name = input("Choose season (20XX-XX): ") + "nba.csv"
@@ -11,29 +13,8 @@ with open(file_name, "r") as csv_file:
     reader = csv.reader(csv_file)
     first_row = next(reader)
 
-
-def extract_col(csv_file, column_index):
-    column_array = []
-
-    with open(csv_file, "r") as file:
-        csv_reader = csv.reader(file)
-        for row in csv_reader:
-            if len(row) > column_index:
-                column_value = row[column_index]
-                if column_value != '':
-                    column_array.append(column_value)
-
-    return column_array
-
-
 names = extract_col(file_name, 1)
 n1 = names.pop(0)
-
-
-def user_prompt():
-    var1 = input("Enter first statistic: ")
-    var2 = input("Enter second statistic: ")
-    return var1, var2
 
 
 # User has multiple chances to type right statistics
@@ -58,9 +39,9 @@ rem2 = p2.pop(0)
 
 gpinrange = False
 while gpinrange is False:
-    bingbingbong = input("Minimum games played? (0 to 83): ")
+    minGP_input = input("Minimum games played? (0 to 83): ")
     try:
-        min_gp = int(bingbingbong)
+        min_gp = int(minGP_input)
         if 0 <= min_gp <= 83:
             gpinrange = True
         else:
@@ -69,11 +50,11 @@ while gpinrange is False:
         print("Please enter a valid integer.")
 
 
-
+# Removes players that have not played enough games
 count = 0
 indexes_to_remove = []
 gamesplayedarr = extract_col(file_name, 5)
-pho85 = gamesplayedarr.pop(0)
+throwaway = gamesplayedarr.pop(0)
 for i, m in enumerate(gamesplayedarr):
     if int(m) <= min_gp:
         indexes_to_remove.append(i)
@@ -100,24 +81,26 @@ num_ticks = 11
 # Calculate x-axis tick values based on the range of arr1
 min_val = np.min(arr1)
 max_val = np.max(arr1)
-if max_val < 2:
+
+# For decimal-heavy stats
+if max_val < 1.5:
     x_ticks = np.arange(int(min_val*10), int(max_val*10) + 5, 1) / 10  # Scale values by 0.1
 else:
-    x_ticks = np.arange(int(min_val), int(max_val) + 5, 5)  # Use whole numbers and multiples of 5
+    x_ticks = nice_ticks(min_val, max_val, 6)
 plt.xticks(x_ticks)
 
 # Calculate y-axis tick values based on the range of arr2
 min_val = np.min(arr2)
 max_val = np.max(arr2)
-if max_val < 2:
+
+if max_val < 1.5:
     y_ticks = np.arange(int(min_val*10), int(max_val*10) + 5, 1) / 10  # Scale values by 0.1
 else:
-    y_ticks = np.arange(int(min_val), int(max_val) + 5, 5)  # Use whole numbers and multiples of 5
+    y_ticks = nice_ticks(min_val, max_val, 6)
 plt.yticks(y_ticks)
 
 plt.xlabel(rem1)
 plt.ylabel(rem2)
-
 
 def on_hover(event):
     if event.inaxes == ax:
@@ -131,12 +114,9 @@ def on_hover(event):
                 else:
                     label.set_visible(False)
             fig.canvas.draw()
-
-
 labels = []
 for i in range(count):
-    label = ax.annotate(
-        names[i],
+    label = ax.annotate(names[i],
         (arr1[i], arr2[i]),
         textcoords="offset points",
         xytext=(0, 10),
