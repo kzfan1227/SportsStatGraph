@@ -33,4 +33,3 @@ def nice_ticks(min_val, max_val, num_ticks):
 
     ticks = np.linspace(nice_min, nice_max, num_ticks)
     return ticks.astype(int)
-
