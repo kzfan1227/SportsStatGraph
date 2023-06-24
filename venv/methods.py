@@ -4,6 +4,7 @@ import numpy as np
 import mplcursors
 import math
 
+# Extracts a column of a .csv file and makes it an array
 def extract_col(csv_file, column_index):
     column_array = []
 
@@ -17,11 +18,14 @@ def extract_col(csv_file, column_index):
 
     return column_array
 
+# Two statistics to plot against each other
 def user_prompt():
     var1 = input("Enter first statistic: ")
     var2 = input("Enter second statistic: ")
     return var1, var2
 
+# Makes the intervals easier on the eyes, so tens, hundreds, ones, instead of decimals
+# log10 to make it adapt to varying range values
 def nice_ticks(min_val, max_val, num_ticks):
     range_val = max_val - min_val
     interval = range_val / (num_ticks - 1)

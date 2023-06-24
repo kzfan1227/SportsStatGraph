@@ -6,9 +6,9 @@ import math
 from methods import *
 
 
-#file_name = input("Choose season (20XX-XX): ") + "nba.csv"
+file_name = input("Choose season (20XX-XX): ") + "nba.csv"
 #print(file_name)
-file_name = "2022-23nba.csv"
+#file_name = "2022-23nba.csv"
 with open(file_name, "r") as csv_file:
     reader = csv.reader(csv_file)
     first_row = next(reader)
@@ -87,16 +87,18 @@ if max_val < 1.5:
     x_ticks = np.arange(int(min_val*10), int(max_val*10) + 5, 1) / 10  # Scale values by 0.1
 else:
     x_ticks = nice_ticks(min_val, max_val, 6)
+
 plt.xticks(x_ticks)
 
-# Calculate y-axis tick values based on the range of arr2
+# Calculate y-axis tick values
 min_val = np.min(arr2)
 max_val = np.max(arr2)
-
+# Axes go by 0.1 when max is less than 1.5
 if max_val < 1.5:
     y_ticks = np.arange(int(min_val*10), int(max_val*10) + 5, 1) / 10  # Scale values by 0.1
 else:
     y_ticks = nice_ticks(min_val, max_val, 6)
+
 plt.yticks(y_ticks)
 
 plt.xlabel(rem1)
